@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Akimart Member</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f2;--card:#fff;--ink:#1b2a2f;--mute:#5d6e72;--line:#dbe2dc;--acc:#0b7a5c;--acc-ink:#fff;--pt:#fff1cc;--pt-ink:#7a5200;--bad:#b3261e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a1b;--card:#1b2628;--ink:#e8efec;--mute:#9db0b0;--line:#2f3d3f;--acc:#3fc79d;--acc-ink:#06241b;--pt:#4a3a10;--pt-ink:#ffd978;--bad:#ff8a80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121a1b;--card:#1b2628;--ink:#e8efec;--mute:#9db0b0;--line:#2f3d3f;--acc:#3fc79d;--acc-ink:#06241b;--pt:#4a3a10;--pt-ink:#ffd978;--bad:#ff8a80;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;font-weight:800;margin:4px 0 12px;letter-spacing:-.02em}
+h2{font-size:1rem;font-weight:800;margin:0 0 10px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px}
+.tabs button{flex:1;white-space:nowrap;padding:10px 14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.tabs button.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin-bottom:8px}
+input:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.btn{padding:11px 16px;border:0;border-radius:10px;background:var(--acc);color:var(--acc-ink);font:inherit;font-weight:700;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:7px 11px;font-size:.875rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.grow{flex:1;min-width:0}
+.name{font-weight:600;overflow-wrap:anywhere}
+.sub{color:var(--mute);font-size:.85rem}
+.pt{background:var(--pt);color:var(--pt-ink);border-radius:99px;padding:2px 10px;font-weight:800;font-size:.85rem;white-space:nowrap}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1.1rem;cursor:pointer}
+.qty b{min-width:20px;text-align:center}
+.big{font-size:1.9rem;font-weight:800;letter-spacing:-.02em}
+.sel{border:2px solid var(--acc)}
+.num{width:84px;margin:0}
+.grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+.neg{color:var(--bad);font-weight:800}
+.pos{color:var(--acc);font-weight:800}
+textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:10px;font:12px/1.4 ui-monospace,monospace}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%}
+#toast.show{opacity:1}
+section{display:none}section.on{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Akimart Member</h1>
+<div class="tabs" id="tabs"></div>
+
+<section id="t-kasir">
+ <div class="card"><h2>Pilih member</h2>
+  <input id="kq" placeholder="Cari nama atau nomor HP" oninput="rK()" autocomplete="off">
+  <div id="kres"></div></div>
+ <div class="card"><h2>Produk yang dibeli</h2><div id="kprod"></div></div>
+ <div class="card" id="ksum"></div>
+</section>
+
+<section id="t-member">
+ <div class="card"><h2>Daftarkan member baru</h2>
+  <input id="mn" placeholder="Nama lengkap"><input id="mh" placeholder="Nomor HP" inputmode="tel">
+  <button class="btn" onclick="addM()">Daftarkan member</button></div>
+ <div class="card"><h2>Daftar member</h2><input id="mq" placeholder="Cari member" oninput="rM()"><div id="mlist"></div></div>
+</section>
+
+<section id="t-produk">
+ <div class="card"><h2>Tambah produk</h2>
+  <div class="grid3"><input id="pn" placeholder="Nama produk"><input id="ph" placeholder="Harga" inputmode="numeric"><input id="pp" placeholder="Poin" inputmode="numeric"></div>
+  <button class="btn" onclick="addP()">Simpan produk</button></div>
+ <div class="card"><h2>Daftar produk</h2><p class="sub" style="margin-top:0">Ubah angka poin langsung di kolom. Poin berlaku per 1 unit yang dibeli.</p><div id="plist"></div></div>
+</section>
+
+<section id="t-riwayat">
+ <div class="card"><h2>Riwayat poin</h2><div id="llist"></div></div>
+ <div class="card"><h2>Cadangkan data</h2>
+  <p class="sub" style="margin-top:0">Data tersimpan di browser perangkat ini. Salin teks di bawah untuk cadangan, atau tempel cadangan lama lalu pilih Muat data.</p>
+  <textarea id="bk"></textarea>
+  <div style="display:flex;gap:8px;margin-top:8px"><button class="btn alt sm" onclick="exp()">Tampilkan data</button><button class="btn sm" onclick="imp()">Muat data</button></div></div>
+</section>
+</div>
+<div id="toast"></div>
+
+<script>
+var K='akimart_v1',tab='kasir',sel=null,cart={};
+var db={products:[{id:1,n:'Contoh Produk A',h:10000,p:1},{id:2,n:'Contoh Produk B',h:25000,p:3},{id:3,n:'Contoh Produk C',h:5000,p:0}],members:[],ledger:[],seq:10};
+try{var s=localStorage.getItem(K);if(s)db=JSON.parse(s)}catch(e){}
+function save(){try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function rp(n){return 'Rp'+Number(n).toLocaleString('id-ID')}
+function mem(id){return db.members.find(function(m){return m.id==id})}
+function toast(t){var e=document.getElementById('toast');e.textContent=t;e.className='show';clearTimeout(toast.t);toast.t=setTimeout(function(){e.className=''},2200)}
+function $(i){return document.getElementById(i)}
+
+var TABS=[['kasir','Kasir'],['member','Member'],['produk','Produk'],['riwayat','Riwayat']];
+function go(t){tab=t;
+ $('tabs').innerHTML=TABS.map(function(x){return '<button class="'+(x[0]==t?'on':'')+'" onclick="go(\''+x[0]+'\')">'+x[1]+'</button>'}).join('');
+ TABS.forEach(function(x){$('t-'+x[0]).className=x[0]==t?'on':''});
+ if(t=='kasir')rK();if(t=='member')rM();if(t=='produk')rP();if(t=='riwayat')rL()}
+
+/* Kasir */
+function rK(){
+ var q=$('kq').value.trim().toLowerCase(),h='';
+ if(sel&&mem(sel)){var m=mem(sel);
+  h='<div class="card sel" style="margin:0"><div class="row" style="border:0;padding:0"><div class="grow"><div class="name">'+esc(m.n)+'</div><div class="sub">'+esc(m.h)+'</div></div><span class="pt">'+m.pts+' poin</span><button class="btn alt sm" onclick="sel=null;rK()">Ganti</button></div></div>'}
+ else if(q){var r=db.members.filter(function(m){return m.n.toLowerCase().indexOf(q)>-1||m.h.indexOf(q)>-1}).slice(0,5);
+  h=r.length?r.map(function(m){return '<div class="row"><div class="grow"><div class="name">'+esc(m.n)+'</div><div class="sub">'+esc(m.h)+'</div></div><span class="pt">'+m.pts+' poin</span><button class="btn sm" onclick="sel='+m.id+';$(\'kq\').value=\'\';rK()">Pilih</button></div>'}).join(''):'<p class="sub">Member tidak ditemukan. Daftarkan di tab Member.</p>'}
+ else h='<p class="sub">Ketik nama atau nomor HP member.</p>';
+ $('kres').innerHTML=h;
+ $('kprod').innerHTML=db.products.length?db.products.map(function(p){var q=cart[p.id]||0;
+  return '<div class="row"><div class="grow"><div class="name">'+esc(p.n)+'</div><div class="sub">'+rp(p.h)+'</div></div><span class="pt">'+p.p+' poin</span><div class="qty"><button aria-label="Kurangi" onclick="qty('+p.id+',-1)">&minus;</button><b>'+q+'</b><button aria-label="Tambah" onclick="qty('+p.id+',1)">+</button></div></div>'}).join(''):'<p class="sub">Belum ada produk. Tambahkan di tab Produk.</p>';
+ var t=tot();
+ $('ksum').innerHTML='<div class="row" style="border:0;padding:0"><div class="grow"><div class="sub">Total belanja</div><div class="big">'+rp(t.h)+'</div></div><div style="text-align:right"><div class="sub">Poin didapat</div><div class="big" style="color:var(--acc)">+'+t.p+'</div></div></div><button class="btn" style="width:100%;margin-top:12px" '+((sel&&t.n)?'':'disabled')+' onclick="saveTx()">Simpan transaksi</button>'}
+function qty(id,d){cart[id]=Math.max(0,(cart[id]||0)+d);rK()}
+function tot(){var h=0,p=0,n=0;db.products.forEach(function(x){var q=cart[x.id]||0;h+=q*x.h;p+=q*x.p;n+=q});return{h:h,p:p,n:n}}
+function saveTx(){var t=tot(),m=mem(sel);if(!m||!t.n)return;
+ var items=db.products.filter(function(x){return cart[x.id]>0}).map(function(x){return{n:x.n,q:cart[x.id],h:x.h,p:x.p}});
+ m.pts+=t.p;db.ledger.unshift({id:db.seq++,t:Date.now(),m:m.id,type:'earn',pts:t.p,total:t.h,items:items});
+ save();toast(m.n+' mendapat '+t.p+' poin');cart={};sel=null;rK()}
+
+/* Member */
+function addM(){var n=$('mn').value.trim(),h=$('mh').value.replace(/\s|-/g,'');
+ if(!n||h.length<8){toast('Isi nama dan nomor HP yang benar');return}
+ if(db.members.some(function(m){return m.h==h})){toast('Nomor HP sudah terdaftar');return}
+ db.members.unshift({id:db.seq++,n:n,h:h,pts:0,t:Date.now()});save();$('mn').value='';$('mh').value='';toast('Member terdaftar');rM()}
+function rM(){var q=$('mq').value.trim().toLowerCase();
+ var r=db.members.filter(function(m){return !q||m.n.toLowerCase().indexOf(q)>-1||m.h.indexOf(q)>-1});
+ $('mlist').innerHTML=r.length?r.map(function(m){return '<div class="row" style="flex-wrap:wrap"><div class="grow"><div class="name">'+esc(m.n)+'</div><div class="sub">'+esc(m.h)+'</div></div><span class="pt">'+m.pts+' poin</span><input class="num" id="r'+m.id+'" type="number" min="1" placeholder="Poin"><button class="btn alt sm" onclick="redeem('+m.id+')">Tukar poin</button></div>'}).join(''):'<p class="sub">Belum ada member.</p>'}
+function redeem(id){var m=mem(id),v=parseInt($('r'+id).value);
+ if(!v||v<1){toast('Isi jumlah poin yang ditukar');return}
+ if(v>m.pts){toast('Poin tidak cukup. Saldo '+m.pts);return}
+ m.pts-=v;db.ledger.unshift({id:db.seq++,t:Date.now(),m:id,type:'redeem',pts:v});save();toast(v+' poin ditukar');rM()}
+
+/* Produk */
+function addP(){var n=$('pn').value.trim(),h=parseInt($('ph').value)||0,p=parseInt($('pp').value)||0;
+ if(!n){toast('Isi nama produk');return}
+ db.products.push({id:db.seq++,n:n,h:h,p:p});save();$('pn').value='';$('ph').value='';$('pp').value='';toast('Produk disimpan');rP()}
+function rP(){$('plist').innerHTML=db.products.length?db.products.map(function(p){return '<div class="row"><div class="grow"><div class="name">'+esc(p.n)+'</div><div class="sub">'+rp(p.h)+'</div></div><input class="num" type="number" min="0" value="'+p.p+'" aria-label="Poin '+esc(p.n)+'" onchange="setP('+p.id+',this.value)"><button class="btn alt sm" onclick="delP('+p.id+')">Hapus</button></div>'}).join(''):'<p class="sub">Belum ada produk.</p>'}
+function setP(id,v){var p=db.products.find(function(x){return x.id==id});p.p=Math.max(0,parseInt(v)||0);save();toast('Poin diperbarui')}
+function delP(id){if(!confirm('Hapus produk ini?'))return;db.products=db.products.filter(function(x){return x.id!=id});delete cart[id];save();rP()}
+
+/* Riwayat */
+function rL(){$('llist').innerHTML=db.ledger.length?db.ledger.slice(0,100).map(function(l){var m=mem(l.m),d=new Date(l.t).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'});
+ var det=l.type=='earn'?l.items.map(function(i){return esc(i.n)+' ×'+i.q}).join(', ')+' ('+rp(l.total)+')':'Penukaran poin';
+ return '<div class="row"><div class="grow"><div class="name">'+esc(m?m.n:'Member dihapus')+'</div><div class="sub">'+d+'</div><div class="sub">'+det+'</div></div><span class="'+(l.type=='earn'?'pos':'neg')+'">'+(l.type=='earn'?'+':'−')+l.pts+'</span></div>'}).join(''):'<p class="sub">Belum ada transaksi. Simpan transaksi pertama di tab Kasir.</p>'}
+function exp(){$('bk').value=JSON.stringify(db)}
+function imp(){try{var d=JSON.parse($('bk').value);if(!d.members||!d.products||!d.ledger)throw 0;db=d;save();toast('Data dimuat');rL()}catch(e){toast('Format data tidak valid')}}
+
+go('kasir');
+</script>
+</body>
+</html>
